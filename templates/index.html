@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <title>Jornal UFG - Pautas em Produção</title>
+    <script>
+        function formatPhone(input) {
+            var value = input.value.replace(/\D/g, '');
+            var formattedValue = '';
+
+            if (value.length > 0) {
+                formattedValue = '(' + value.substring(0, 2) + ') ';
+            }
+            if (value.length >= 3) {
+                formattedValue += value.substring(2, 7) + '-';
+            }
+            if (value.length >= 8) {
+                formattedValue += value.substring(7, 11);
+            }
+
+            input.value = formattedValue;
+        }
+    </script>
+</head>
+<body>
+    <div class="container">
+        <h1>Registro de Pautas</h1>
+        <form action="{{ url_for('add_pauta') }}" method="post">
+            <div class="form-group">
+                <label for="reporter">Repórter:</label>
+                <input type="text" id="reporter" name="reporter" required>
+            </div>
+            <div class="form-group">
+                <label for="descricao">Descrição da Pauta:</label>
+                <textarea id="descricao" name="descricao" required></textarea>
+            </div>
+            <div class="form-group">
+                <label for="fonte">Fonte Principal:</label>
+                <input type="text" id="fonte" name="fonte" required>
+            </div>
+            <div class="form-group">
+                <label for="unidade">Unidade Acadêmica:</label>
+                <input type="text" id="unidade" name="unidade" required>
+            </div>
+            <div class="form-group">
+                <label for="telefone">Telefone da Fonte (com DDD):</label>
+                <input type="text" id="telefone" name="telefone" required oninput="formatPhone(this)" maxlength="15">
+            </div>
+            <div class="form-group">
+                <label for="data_inicio">Data de Início da Produção:</label>
+                <input type="date" id="data_inicio" name="data_inicio" required>
+            </div>
+            <div class="form-group">
+                <label for="previsao_entrega">Previsão de Entrega:</label>
+                <input type="date" id="previsao_entrega" name="previsao_entrega" required>
+            </div>
+            <button type="submit">Adicionar Pauta</button>
+        </form>
+        <h2>Pautas em Produção</h2>
+        <table class="pauta-table">
+            <tr>
+                <th>Repórter</th>
+                <th>Descrição</th>
+                <th>Fonte Principal</th>
+                <th>Unidade Acadêmica</th>
+                <th>Telefone da Fonte</th>
+                <th>Data de Início</th>
+                <th>Previsão de Entrega</th>
+                <th>Ações</th>
+            </tr>
+            {% for index, pauta in enumerate(pautas) %}
+            <tr>
+                <td>{{ pauta.reporter }}</td>
+                <td>{{ pauta.descricao }}</td>
+                <td>{{ pauta.fonte }}</td>
+                <td>{{ pauta.unidade }}</td>
+                <td>{{ pauta.telefone }}</td>
+                <td>{{ pauta.data_inicio }}</td>
+                <td>{{ pauta.previsao_entrega }}</td>
+                <td>
+                    <form action="{{ url_for('delete_pauta', index=index) }}" method="post">
+                        <button type="submit">Excluir</button>
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+</body>
+</html>
